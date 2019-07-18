@@ -38,10 +38,4 @@ public class User {
     private String providerId;
 
 
-    public enum AuthProvider {
-        local,
-        facebook,
-        google,
-        github
-    }
 }
