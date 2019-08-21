@@ -1,5 +1,12 @@
 package com.kodascript.oauth2sosial.config;
 
+import com.kodascript.oauth2sosial.security.CustomUserDetailsService;
+import com.kodascript.oauth2sosial.security.RestAuthenticationEntryPoint;
+import com.kodascript.oauth2sosial.security.TokenAuthenticationFilter;
+import com.kodascript.oauth2sosial.security.oauth2.CustomOAuth2UserService;
+import com.kodascript.oauth2sosial.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.kodascript.oauth2sosial.security.oauth2.OAuth2AuthenticationFailureHandler;
+import com.kodascript.oauth2sosial.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +20,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
-import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
@@ -28,28 +33,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Autowired
-    private CustomeUserDetailsService customeUserDetailsService;
+    private CustomUserDetailsService customeUserDetailsService;
 
     @Autowired
-    private CustomeOAuth2UserService customeOAuth2UserService;
+    private CustomOAuth2UserService customeOAuth2UserService;
 
     @Autowired
     private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
     @Autowired
-    private OAuth2AuthenticationFailuerHandler oAuth2AuthenticationFailuerHandler;
+    private OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailuerHandler;
 
     @Autowired
-    private HttpCookieOAuth2AuthorizationRequestRespository httpCookieOAuth2AuthorizationRequestRespository;
+    private HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRespository;
 
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
-        return new TokenAuthenticatonFilter();
+        return new TokenAuthenticationFilter();
     }
 
     @Bean
-    public HttpCookieOAuth2AuthorizationRequestRespository cookieOAuth2AuthorizationRequestRespository() {
-        return new HttpCookieOAuth2AuthorizationRequestRespository();
+    public HttpCookieOAuth2AuthorizationRequestRepository cookieOAuth2AuthorizationRequestRespository() {
+        return new HttpCookieOAuth2AuthorizationRequestRepository();
     }
 
     @Override
@@ -88,8 +93,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/",
                         "/error",
-                        "/favicon.ico"
-                        , "/**/*.png",
+                        "/favicon.ico",
+                        "/**/*.png",
                         "/**/*.gif",
                         "/**/*.svg",
                         "/**/*.jpg",
@@ -104,7 +109,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .oauth2Login()
                 .authorizationEndpoint()
-                .baseUri("oauth2/callback/*")
+                .baseUri("/oauth2/authorize")
+                .authorizationRequestRepository(cookieOAuth2AuthorizationRequestRespository())
+                .and()
+                .redirectionEndpoint()
+                .baseUri("/oauth2/callback/*")
                 .and()
                 .userInfoEndpoint()
                 .userService(customeOAuth2UserService)

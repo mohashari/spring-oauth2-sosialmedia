@@ -34,19 +34,19 @@ public class AppProperties {
     }
 
     public static class OAuth2 {
-        private List<String> authorizdRedirecUris = new ArrayList<>();
+        private List<String> authorizedRedirectUris = new ArrayList<>();
 
-        public List<String> getAuthorizdRedirecUris() {
-            return authorizdRedirecUris;
+        public List<String> getAuthorizedRedirectUris() {
+            return authorizedRedirectUris;
         }
 
-        public OAuth2 authorizedRedirectUris(List<String> authorizedRedirecUris) {
-            this.authorizdRedirecUris = authorizedRedirecUris;
+        public OAuth2 authorizedRedirectUris(List<String> authorizedRedirectUris) {
+            this.authorizedRedirectUris = authorizedRedirectUris;
             return this;
         }
     }
 
-    public Auth geAuth() {
+    public Auth getAuth() {
         return auth;
     }
 
